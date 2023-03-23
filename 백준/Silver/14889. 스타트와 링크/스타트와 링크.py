@@ -40,20 +40,22 @@ read = sys.stdin.readline
 
 # ** 비트마스크 풀이 **
 # 시간초과가 발생하는 이유 : 1 3 5, 2 4 6 팀과 2 4 6, 1 3 5 팀은 같다.
-# 중복을 해결해야 함.
+# 중복을 해결해야 함. -> 근데 비트마스크로 해결이 되나?
 n = int(read())
 ability = [list(map(int, read().split())) for _ in range(n)]
 ans = sys.maxsize
 
 # 모든 경우의 수 : 2 ** 4 = 32
-for i in range(1 << n):
+for i in range(1, 1 << n, 2):
     # 가정 1. 모든 경우의 수를 리스트에 넣었다뺐다하면서 시간초과
+    # start 팀에 항상 0번이 들어가있다고 가정
+    # ~~~~1이 되어야 하므로 1 3 5 ...이 되어야함
     cnt = 0
     for j in range(n):
         if i & (1 << j) > 0:
             cnt += 1
 
-    if cnt != n // 2:
+    if cnt != n//2:
         continue
 
     start, link = [], []
@@ -62,7 +64,7 @@ for i in range(1 << n):
             start.append(j)
         else:
             link.append(j)
-
+    # print(start, link)
     
     # 각 팀이 n//2로 구성되었을 때만
     st, li = 0, 0

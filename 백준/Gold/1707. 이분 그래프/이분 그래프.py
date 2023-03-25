@@ -5,37 +5,75 @@ read = sys.stdin.readline
 # print(f"{end - start:.5f} sec")
 
 
-### bfs
-import collections
-import sys
+
+#### BFS 풀이 ####
+from collections import deque
+def bfs():
+    # 테스트케이스 개수
+    k = int(read())
+
+    for _ in range(k):
+        # 정점의 개수 v, 간선의 개수 e
+        v, e = map(int, read().split())
+        graph = [[] for _ in range(v + 1)]
+        visited = [0] * (v + 1)
+
+        for _ in range(e):
+            a, b = map(int, read().split())
+            graph[a].append(b)
+            graph[b].append(a)
+
+        queue = deque()
+        GROUP= 1
+        flag = False
+        for i in range(1, v + 1):
+            if visited[i] == 0:
+                queue.append(i)
+                visited[i] = GROUP
+                while queue:
+                    pop = queue.popleft()
+                    for j in graph[pop]:
+                        if visited[j] == 0: # 방문하지 않은 정점이면 큐에 삽입
+                            queue.append(j)
+                            visited[j] = -1 * visited[pop] # 현재 노드와 다른 그룹 지정
+                        elif visited[j] == visited[pop]: # 이미 방문한 경우에 동일 그룹에 속하면 'NO'
+                            flag = True
+
+        print('YES' if not flag else 'NO')
+
+
+#### DFS 풀이 ####
 sys.setrecursionlimit(10 ** 6)
-input = sys.stdin.readline
+# 테스트케이스 개수
+k = int(read())
+def dfs(v, group):
+    global error
 
-for _ in range(int(input())):
-    V, E = map(int, input().split())
-    graph = [[] for i in range(V+1)] # 빈 그래프 생성
-    visited = [0] * (V+1) # 방문한 정점 체크
+    if error:
+        return
 
-    for _ in range(E):
-        a,b = map(int, input().split())
-        graph[a].append(b) # 무방향 그래프
-        graph[b].append(a) # 무방향 그래프
+    visited[v] = group  # 해당 그룹으로 등록
+    for i in graph[v]:
+        if not visited[i]:
+            dfs(i, -group)  # 다른 그룹으로 설정
+        elif visited[v] == visited[i]:  # 인접한데 같은 그룹이라면
+            error = True  # 에러값 True
+            return  # 그후 재귀 리턴
 
 
-    q = collections.deque()
-    group = 1
-    bipatite = True
-    for i in range(1, V+1):
-        if visited[i] == 0: # 방문하지 않은 정점이면 bfs 수행
-            q.append(i)
-            visited[i] = group
-            while q:
-                v = q.popleft()
-                for w in graph[v]:
-                    if visited[w] == 0: # 방문하지 않은 정점이면 큐에 삽입
-                        q.append(w)
-                        visited[w] = -1 * visited[v] # 현재 노드와 다른 그룹 지정
-                    elif visited[v] == visited[w]: # 이미 방문한 경우, 동일한 그룹에 속하면 False
-                        bipatite = False
+for _ in range(k):
+    # 정점의 개수 v, 간선의 개수 e
+    v, e = map(int, read().split())
+    graph = [[] for _ in range(v + 1)]
+    visited = [False] * (v + 1)
+    error = False
 
-    print('YES' if bipatite else 'NO')
+    for _ in range(e):
+        a, b = map(int, read().split())
+        graph[a].append(b)
+        graph[b].append(a)
+
+    for i in range(1, v + 1):
+        if not visited[i] and not error:  # 만약 아직 방문하지 않았다면
+            dfs(i, 1)  # dfs를 돈다.
+    print('YES' if not error else 'NO')

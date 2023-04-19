@@ -4,9 +4,10 @@ def solution(priorities, location):
 
     d = deque([(v,i) for i,v in enumerate(priorities)])
 
-    while len(d):
+    while True:
         item = d.popleft()
-        if d and max(d)[0] > item[0]:
+        # 마지막 문서일 경우 max() 사용 시 오류 발생
+        if d and max(d, key=lambda x: x[0])[0] > item[0]:
             d.append(item)
         else:
             answer += 1

@@ -1,15 +1,8 @@
-from itertools import product
-
-def solution(users, emoticons):
-    discount_rates = [10, 20, 30, 40]
-    max_subscribers = -1
-    max_sales = -1
-
-    # 모든 할인율 조합에 대해 반복
-    for discounts in product(discount_rates, repeat=len(emoticons)):
+def dfs(idx, discounts, users, emoticons, discount_rates=[10, 20, 30, 40]):
+    if idx == len(emoticons):
         total_subscribers = 0
         total_sales = 0
-        
+
         # 각 사용자에 대해 반복
         for user in users:
             user_discount_rate, user_price_limit = user
@@ -29,9 +22,23 @@ def solution(users, emoticons):
                 total_subscribers += 1 
             else:
                 total_sales += purchase_cost
+
+        return (total_subscribers, total_sales)
         
-        if (total_subscribers > max_subscribers or (total_subscribers == max_subscribers and total_sales > max_sales)):
-            max_subscribers = total_subscribers 
-            max_sales=total_sales
-    
-    return [max_subscribers,max_sales]
+    else:
+        max_subscribers = -1
+        max_sales = -1
+        
+        for rate in discount_rates:
+            discounts[idx] = rate
+            subscribers, sales = dfs(idx+1, discounts, users, emoticons)
+
+            if (subscribers > max_subscribers or 
+               (subscribers == max_subscribers and sales > max_sales)):
+                max_subscribers = subscribers 
+                max_sales=sales
+                
+        return (max_subscribers, max_sales)
+
+def solution(users, emoticons):
+    return list(dfs(0, [0]*len(emoticons), users, emoticons))

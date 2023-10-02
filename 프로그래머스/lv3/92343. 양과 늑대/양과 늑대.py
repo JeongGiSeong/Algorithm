@@ -1,5 +1,5 @@
 def solution(info, edges):
-    visited = [0] * len(info)
+    visited = [False] * len(info)
     answer = [] # 가능한 경우들 중에서 양의 최대 개수를 저장하는 리스트
     
     def dfs(sheep, wolf):
@@ -10,15 +10,15 @@ def solution(info, edges):
         
         for p, c in edges: 
             if visited[p] and not visited[c]: 
-                visited[c] = 1
-                if info[c] == 0: 
+                visited[c] = True
+                if info[c] == 0:
                     dfs(sheep+1, wolf)  # 다음 노드가 양인 경우
                 else:
                     dfs(sheep, wolf+1)  # 다음 노드가 늑대인 경우
-                visited[c] = 0   # 현재 노드에 대한 탐색이 종료되면 방문 여부를 원상 복구
+                visited[c] = False   # 현재 노드에 대한 탐색이 종료되면 방문 여부를 원상 복구
 
 	# 탐색 시작
-    visited[0] = 1  
+    visited[0] = True
     dfs(1, 0)
 
     return max(answer)

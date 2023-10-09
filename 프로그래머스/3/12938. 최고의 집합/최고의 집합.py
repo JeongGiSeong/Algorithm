@@ -1,12 +1,15 @@
 def solution(n, s):
-    # 모두 공평하게 값을 나눠준 상태에서 나머지를 각각 1씩 더해주는것이 최고의 집합
+    answer = []
     if n > s:
         return [-1]
     
-    p, q = divmod(s, n)
-    answer = [p] * n
+    quotient, remainder = divmod(s, n)
     
-    for i in range(q):
-        answer[i] += 1
+    for i in range(n-remainder):
+        answer.append(quotient)
+    for i in range(remainder):
+        answer.append(quotient+1)
         
-    return sorted(answer)
+    return answer
+
+print(solution(4, 99))

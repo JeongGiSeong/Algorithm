@@ -14,14 +14,14 @@ def check(users, banned_id):
 
 def solution(user_id, banned_id):
     user_permutation = list(permutations(user_id, len(banned_id)))
-    ban_set = []
+    ban_set = set()
 
     for users in user_permutation:
         if not check(users, banned_id):
             continue
         else:
-            users = set(users)
-            if users not in ban_set:
-                ban_set.append(users)
+            # sort로  [‘user1’, ‘user2’]와 [‘user2’, ‘user1’] 중복 제거
+            users = tuple(sorted(users))
+            ban_set.add(users)
 
     return len(ban_set)

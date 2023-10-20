@@ -2,7 +2,6 @@
 기둥, 삭제 = 0, 0
 
 def isImpossible(answer):
-    COL, ROW = 0, 1
     for x, y, a in answer:
         if a == 기둥: # 기둥일 때
             if y != 0 and (x, y-1, 기둥) not in answer and \
@@ -24,7 +23,7 @@ def solution(n, build_frame):
             answer.add(item)
             if isImpossible(answer):
                 answer.remove(item)
-        elif item in answer: # 삭제
+        else: # 삭제
             answer.remove(item)
             if isImpossible(answer):
                 answer.add(item)

@@ -1,5 +1,5 @@
 def solution(enroll, referral, seller, amount):
-    money = [0 for _ in range(len(enroll))]
+    money = [0] * len(enroll)
     dict = {}
     for i, e in enumerate(enroll):
         dict[e] = i

@@ -1,36 +1,41 @@
-# 최소한의 다트, 싱글 또는 불을 최대한 많이 던져야 함
-# DP를 사용해야 되는 문제
+INF = 987654321
+
+def create_table():
+    arr = []
+    arr.append([i for i in range(1, 21)])
+    arr[0].append(50)
+    nxt = []
+    for i in range(1, 21):
+        for j in range(2, 4):
+            ret = i * j
+            
+            if ret > 20:
+                nxt.append(ret)
+                
+    arr.append(list(set(nxt)))
+    
+    return arr
+
 def solution(target):
-    # target까지 도달하는 데 필요한 최소 다트 수와 "싱글" 또는 "불"을 맞춘 횟수를 기록하는 배열
-    # 최댓값으로 초기화
-    dp = [[float('inf'), 0] for _ in range(300000)]
+    table = create_table()
 
-    # 가능한 과녁 값들
-    targetList = [i + 1 for i in range(20)]
-
-    # 시작 지점의 다트 수는 0으로 초기화
+    dp = [[INF, 0] for _ in range(target + 1)]
     dp[0][0] = 0
 
-    # target까지 탐색
-    for i in range(target):
-        def updateDart(addIdx, count):
-            # 던진 다트 수를 갱신할 필요가 있는 경우
-            if dp[i + addIdx][0] >= dp[i][0] + 1:
-                if dp[i + addIdx][0] == dp[i][0] + 1:
-                    # 기존 값과 비교하여 "싱글" 또는 "불"을 맞춘 횟수(합) 갱신
-                    dp[i + addIdx][1] = max(dp[i + addIdx][1], dp[i][1] + count)
-                else:
-                    # 던진 다트 수와 "싱글" 또는 "불"을 맞춘 횟수(합)을 갱신
-                    dp[i + addIdx] = [dp[i][0] + 1, dp[i][1] + count]
+    for i in range(1, target + 1):
+        for j in range(2):
+            for k in range(len(table[j])):
+                prev = i - table[j][k]
 
-        # 모든 과녁 값에 대해 확인
-        for j in targetList:
-            # 싱글, 더블, 트리플을 순서대로 적용하여 갱신
-            for multiplier, hitCount in [[1, 1], [2, 0], [3, 0]]:
-                updateDart(j * multiplier, hitCount)
+                if prev < 0:
+                    continue
 
-        # "불"에 대해서도 확인하여 갱신
-        updateDart(50, 1)
+                total, valid = dp[prev][0] + 1, dp[prev][1] + 1 - j
 
-    # target까지 도달하는 데 필요한 최소 다트 수와 "싱글" 또는 "불"을 맞춘 횟수 반환
+                if total < dp[i][0]:
+                    dp[i] = [total, valid]
+                    
+                elif total == dp[i][0]:
+                    dp[i] = [total, max(dp[i][1], valid)]
+
     return dp[target]

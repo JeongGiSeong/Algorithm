@@ -1,6 +1,9 @@
 # 5x5부터 시작해서 1x1까지 그리드를 사용해서 풀자
 # 그리드로 안되는 상황이 있나? 없다.
 
+import sys
+input = sys.stdin.readline
+
 paper = [list(map(int, input().split())) for _ in range(10)]
 ans = 25
 cnt = [0] * 6
@@ -24,12 +27,6 @@ def mark(y, x, size, v):
         for j in range(size):
             paper[y+i][x+j] = v
 
-    if v:
-        cnt[size] -= 1
-    else:
-        cnt[size] += 1
-
-
 def backtraking(y, x):
     global ans
 
@@ -48,8 +45,10 @@ def backtraking(y, x):
     for size in range(1, 6):
         if is_possible(y, x, size):
             mark(y, x, size, 0)
+            cnt[size] += 1
             backtraking(y, x+1)
             mark(y, x, size, 1)
+            cnt[size] -= 1
 
 backtraking(0, 0)
 print(-1 if ans == 25 else ans)

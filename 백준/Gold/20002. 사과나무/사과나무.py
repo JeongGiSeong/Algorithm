@@ -18,5 +18,8 @@ for k in range(1, n+1):
         for j in range(k, n+1):
             profit = pre[i][j] - pre[i-k][j] - pre[i][j-k] + pre[i-k][j-k]
             max_profit = max(max_profit, profit)
-            
+
 print(max_profit)
+
+###### 오답노트 ######
+# Sliding Window를 사용하지 않아 시간초과 발생
